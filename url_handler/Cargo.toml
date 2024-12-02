@@ -1,0 +1,28 @@
+[package]
+name = "url_handler"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "Collection of differnt URL handlers to perform CRUD operation"
+readme = "../README.md"
+homepage = "https://wolfpit.net"
+repository = "https://github.com/wahrwolf/url_handler.git"
+
+[dependencies]
+path-absolutize = "3.1.1"
+anyhow = "1.0.79"
+chrono = { version = "0.4.34", features = ["serde"] }
+dirs = "5.0.1"
+humantime = "2.1.0"
+humantime-serde = "1.1.1"
+keshvar = { version = "0.5.0", features = ["serde-derive"] }
+log = { version = "0.4.21", features = ["serde", "kv", "kv_serde"] }
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+shellwords = "1.1.0"
+simple_logger = { version = "4.3.3", features = ["stderr"] }
+portable-pty = "0.8.1"
+tempfile = "3.10.0"
+toml = "0.8.10"
+url = { version = "2.5.0", features = ["serde"] }
+reqwest = { version = "0.12.3", features = ["blocking"] }
