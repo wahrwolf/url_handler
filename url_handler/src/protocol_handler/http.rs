@@ -1,4 +1,5 @@
 use super::ProtocolHandler;
+use std::collections::HashSet;
 use anyhow::Result;
 use reqwest::{
     blocking::{Client, RequestBuilder},
@@ -108,11 +109,25 @@ impl ProtocolHandler for HttpProtocolHandler {
         let string = response.text()?;
         Ok(Some(string))
     }
-    fn push_string_to_url(&self, url: &Url, string: &String) -> Result<()> {
+
+    fn push_string_to_url(&self, url: &Url, string: &str) -> Result<()> {
         self.build_request_with_config(url, HttpMethod::Put)?
-            .body(string.clone())
+            .body(string.to_string().clone())
             .send()?
             .error_for_status()?;
         Ok(())
+    }
+
+    fn delete_string_from_url(&self, _: &Url) -> Result<()> {
+        todo!("Delete Operation is not yet implemented for the http handler!")
+    }
+    fn create_empty_string_on_url(&self, _: &Url) -> Result<()> {
+        todo!("Create String Operation is not yet implemented for the http handler!")
+    }
+    fn create_url_container(&self, _: &Url) -> Result<()> {
+        todo!("Create Container Container Operation is not yet implemented for the http handler!")
+    }
+    fn list_urls_in_url_container(&self, _: &Url) -> Result<HashSet<Url>> {
+        todo!("List URL Operation is not yet implemented for the http handler!")
     }
 }

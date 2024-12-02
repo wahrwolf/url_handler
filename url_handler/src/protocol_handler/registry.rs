@@ -15,18 +15,20 @@ pub struct ProtocolHandlerRegistry {
     http_handler: KnownProtocolHandler,
 }
 
-impl ProtocolHandlerRegistry {
-    pub fn default() -> Self {
+impl Default for ProtocolHandlerRegistry {
+    fn default() -> Self {
         ProtocolHandlerRegistry::new(&ProtocolHandlerConfig::default())
     }
+}
+
+impl ProtocolHandlerRegistry {
 
     pub fn new(config: &ProtocolHandlerConfig) -> Self {
-        let registry = ProtocolHandlerRegistry {
+        ProtocolHandlerRegistry {
             file_handler: KnownProtocolHandler::File(FileProtocolHandler::default()),
             scp_handler: KnownProtocolHandler::Scp(SCPProtocolHandler::default()),
             http_handler: KnownProtocolHandler::Http(HttpProtocolHandler::new(&config.http)),
-        };
-        registry
+        }
     }
 
     pub fn get_handler_for_protocol(&self, protocol: &str) -> Option<&KnownProtocolHandler> {

@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use super::ProtocolHandler;
 use anyhow::{Context, Result};
 use path_absolutize::*;
@@ -17,7 +18,7 @@ impl ProtocolHandler for FileProtocolHandler {
         let string = read_to_string(path)?;
         Ok(Some(string))
     }
-    fn push_string_to_url(&self, url: &Url, string: &String) -> Result<()> {
+    fn push_string_to_url(&self, url: &Url, string: &str) -> Result<()> {
         let Ok(path) = url.to_file_path() else {
             anyhow::bail!("Could not parse URL to path");
         };
@@ -30,6 +31,19 @@ impl ProtocolHandler for FileProtocolHandler {
         }
         write(path, string)?;
         Ok(())
+    }
+
+    fn delete_string_from_url(&self, _: &Url) -> Result<()> {
+        todo!("Delete Operation is not yet implemented for the file handler!")
+    }
+    fn create_empty_string_on_url(&self, _: &Url) -> Result<()> {
+        todo!("Create String Operation is not yet implemented for the file handler!")
+    }
+    fn create_url_container(&self, _: &Url) -> Result<()> {
+        todo!("Create Container Container Operation is not yet implemented for the file handler!")
+    }
+    fn list_urls_in_url_container(&self, _: &Url) -> Result<HashSet<Url>> {
+        todo!("List URL Operation is not yet implemented for the file handler!")
     }
 }
 

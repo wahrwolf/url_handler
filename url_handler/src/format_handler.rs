@@ -3,7 +3,7 @@ use serde::{de::DeserializeOwned, Serialize};
 use std::vec::Vec;
 
 pub trait FormatHandler<T: Serialize + DeserializeOwned> {
-    fn from_str(&self, data: &String) -> Result<T>;
+    fn from_str(&self, data: &str) -> Result<T>;
     fn to_string(&self, record: &T) -> Result<String>;
 }
 
@@ -23,7 +23,7 @@ impl KnownFormatHandler {
 }
 
 impl<T: Serialize + DeserializeOwned> FormatHandler<T> for KnownFormatHandler {
-    fn from_str(&self, string: &String) -> Result<T> {
+    fn from_str(&self, string: &str) -> Result<T> {
         self.to_handler().from_str(string)
     }
     fn to_string(&self, record: &T) -> Result<String> {
@@ -37,20 +37,24 @@ pub struct FormatHandlerRegistry {
     json: KnownFormatHandler,
 }
 
-impl FormatHandlerRegistry {
-    pub fn new() -> Self {
-        FormatHandlerRegistry::default()
-    }
-    pub fn default() -> Self {
+impl Default for FormatHandlerRegistry {
+    fn default() -> Self {
         FormatHandlerRegistry {
             toml: KnownFormatHandler::Toml(TomlHandler::default()),
             json: KnownFormatHandler::Json(JsonHandler::default()),
         }
     }
+}
+
+impl FormatHandlerRegistry {
+    pub fn new() -> Self {
+        FormatHandlerRegistry::default()
+    }
     pub fn get_handlers(&self) -> Vec<&KnownFormatHandler> {
-        let mut set = Vec::new();
-        set.push(&self.toml);
-        set.push(&self.json);
+        let set = vec![
+            &self.toml,
+            &self.json
+        ];
         set
     }
 
@@ -67,8 +71,8 @@ impl FormatHandlerRegistry {
 #[derive(Default, Clone)]
 pub struct TomlHandler {}
 impl<T: Serialize + DeserializeOwned> FormatHandler<T> for TomlHandler {
-    fn from_str(&self, string: &String) -> Result<T> {
-        let record = toml::from_str(&string)?;
+    fn from_str(&self, string: &str) -> Result<T> {
+        let record = toml::from_str(string)?;
         Ok(record)
     }
     fn to_string(&self, record: &T) -> Result<String> {
@@ -80,8 +84,8 @@ impl<T: Serialize + DeserializeOwned> FormatHandler<T> for TomlHandler {
 #[derive(Default, Clone)]
 pub struct JsonHandler {}
 impl<T: Serialize + DeserializeOwned> FormatHandler<T> for JsonHandler {
-    fn from_str(&self, string: &String) -> Result<T> {
-        let record = serde_json::from_str(&string)?;
+    fn from_str(&self, string: &str) -> Result<T> {
+        let record = serde_json::from_str(string)?;
         Ok(record)
     }
     fn to_string(&self, record: &T) -> Result<String> {
@@ -102,7 +106,7 @@ pub fn build_string_from_record_with_extension<T: Serialize + DeserializeOwned>(
 }
 
 pub fn build_record_from_string_with_extension<T: Serialize + DeserializeOwned>(
-    string: &String,
+    string: &str,
     extension: &str,
     registry: &FormatHandlerRegistry,
 ) -> Result<T> {
@@ -113,7 +117,7 @@ pub fn build_record_from_string_with_extension<T: Serialize + DeserializeOwned>(
 }
 
 pub fn build_record_from_string<T: Serialize + DeserializeOwned>(
-    string: &String,
+    string: &str,
     registry: &FormatHandlerRegistry,
 ) -> Result<T> {
     for handler in registry.get_handlers() {

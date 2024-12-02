@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use crate::external_fascade::OpenSSHFascade;
 use anyhow::Result;
 use path_absolutize::*;
@@ -15,16 +16,28 @@ impl ProtocolHandler for SCPProtocolHandler {
     fn fetch_string_from_url(&self, url: &Url) -> Result<Option<String>> {
         let tmp_dir: TempDir = TempDir::new()?;
         let target_file = tmp_dir.path().join("string");
-        OpenSSHFascade::download_file(&url, &target_file)?;
+        OpenSSHFascade::download_file(url, &target_file)?;
         let string = read_to_string(target_file)?;
         Ok(Some(string))
     }
-    fn push_string_to_url(&self, url: &Url, string: &String) -> Result<()> {
+    fn push_string_to_url(&self, url: &Url, string: &str) -> Result<()> {
         let tmp_dir: TempDir = TempDir::new()?;
         let source_file = tmp_dir.path().join("string");
         write(&source_file, string)?;
-        OpenSSHFascade::upload_file(&source_file, &url)?;
+        OpenSSHFascade::upload_file(&source_file, url)?;
         Ok(())
+    }
+    fn delete_string_from_url(&self, _: &Url) -> Result<()> {
+        todo!("Delete Operation is not yet implemented for the scp handler!")
+    }
+    fn create_empty_string_on_url(&self, _: &Url) -> Result<()> {
+        todo!("Create String Operation is not yet implemented for the scp handler!")
+    }
+    fn create_url_container(&self, _: &Url) -> Result<()> {
+        todo!("Create Container Container Operation is not yet implemented for the scp handler!")
+    }
+    fn list_urls_in_url_container(&self, _: &Url) -> Result<HashSet<Url>> {
+        todo!("List URL Operation is not yet implemented for the scp handler!")
     }
 }
 

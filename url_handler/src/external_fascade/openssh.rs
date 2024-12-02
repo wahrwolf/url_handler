@@ -1,6 +1,6 @@
 use anyhow::Result;
-use std::ffi::OsString;
-use std::path::PathBuf;
+use std::ffi::OsStr;
+use std::path::Path;
 use std::process::Command;
 use url::Url;
 
@@ -31,7 +31,7 @@ impl OpenSSHFascade {
                     let Ok(target_file) = target.clone().to_file_path() else {
                         anyhow::bail!("Could not transform target into PathBuf");
                     };
-                    Self::download_file(&source, &target_file)
+                    Self::download_file(source, &target_file)
                 }
                 "scp" => Self::copy_remote_file(source.clone(), target.clone()),
                 _ => anyhow::bail!("target scheme is not supported! Only scp and file are valid."),
@@ -40,30 +40,30 @@ impl OpenSSHFascade {
         }
     }
 
-    pub fn upload_file(source: &PathBuf, target: &Url) -> Result<()> {
-        Self::copy_file(&source.clone().into(), &target.clone().to_string().into())
+    pub fn upload_file(source: &Path, target: &Url) -> Result<()> {
+        Self::copy_file(source.as_os_str(), target.clone().as_str().as_ref())
     }
 
-    pub fn download_file(source: &Url, target: &PathBuf) -> Result<()> {
+    pub fn download_file(source: &Url, target: &Path) -> Result<()> {
         Self::copy_file(
-            &source.clone().to_string().into(),
-            &target.clone().into_os_string(),
+            source.clone().as_str().as_ref(),
+            target.as_os_str(),
         )
     }
 
     pub fn copy_remote_file(source: Url, target: Url) -> Result<()> {
-        Self::copy_file(&source.to_string().into(), &target.to_string().into())
+        Self::copy_file(source.as_str().as_ref(), target.as_str().as_ref())
     }
 
-    pub fn copy_local_file(source: &PathBuf, target: &PathBuf) -> Result<()> {
+    pub fn copy_local_file(source: &Path, target: &Path) -> Result<()> {
         Self::copy_file(
-            &source.clone().into_os_string(),
-            &target.clone().into_os_string(),
+            source.as_os_str(),
+            target.as_os_str(),
         )
     }
 
-    fn copy_file(source: &OsString, target: &OsString) -> Result<()> {
-        Command::new("scp").args(&[source, target]).status()?;
+    fn copy_file(source: &OsStr, target: &OsStr) -> Result<()> {
+        Command::new("scp").args([source, target]).status()?;
         Ok(())
     }
 }
