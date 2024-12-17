@@ -81,3 +81,35 @@ pub fn push_string_to_url(
     };
     handler.push_string_to_url(url, string)
 }
+
+pub fn delete_string_from_url(url: &Url, registry: &ProtocolHandlerRegistry) -> Result<()> {
+    let protocol = url.scheme();
+    let Some(handler) = registry.get_handler_for_protocol(protocol) else {
+        anyhow::bail!("Could not find handler for protocol '{protocol}'");
+    };
+    handler.delete_string_from_url(url)
+}
+
+pub fn create_empty_string_on_url(url: &Url, registry: &ProtocolHandlerRegistry) -> Result<()> {
+    let protocol = url.scheme();
+    let Some(handler) = registry.get_handler_for_protocol(protocol) else {
+        anyhow::bail!("Could not find handler for protocol '{protocol}'");
+    };
+    handler.create_empty_string_on_url(url)
+}
+
+pub fn create_url_container(url: &Url, registry: &ProtocolHandlerRegistry) -> Result<()> {
+    let protocol = url.scheme();
+    let Some(handler) = registry.get_handler_for_protocol(protocol) else {
+        anyhow::bail!("Could not find handler for protocol '{protocol}'");
+    };
+    handler.create_url_container(url)
+}
+
+pub fn list_urls_in_url_container(url: &Url, registry: &ProtocolHandlerRegistry) -> Result<HashSet<Url>> {
+    let protocol = url.scheme();
+    let Some(handler) = registry.get_handler_for_protocol(protocol) else {
+        anyhow::bail!("Could not find handler for protocol '{protocol}'");
+    };
+    handler.to_handler().list_urls_in_url_container(url)
+}

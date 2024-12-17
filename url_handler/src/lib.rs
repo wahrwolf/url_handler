@@ -3,7 +3,8 @@ use serde::{de::DeserializeOwned, Serialize};
 use url::Url;
 mod protocol_handler;
 pub use protocol_handler::{
-    fetch_string_from_url, push_string_to_url,
+    fetch_string_from_url, push_string_to_url, delete_string_from_url, create_empty_string_on_url,
+    create_url_container, list_urls_in_url_container,
     try_build_url_from_path_buf, try_build_url_from_path_buf_with_hostname, ProtocolHandlerConfig,
     ProtocolHandlerRegistry,
 };
