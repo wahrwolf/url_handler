@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use super::ProtocolHandler;
 use anyhow::{Context, Result};
 use path_absolutize::*;
-use std::fs::{create_dir_all, read_to_string, write};
+use std::fs::{create_dir_all, read_to_string, write, remove_file};
 use std::path::Path;
 use std::path::PathBuf;
 use url::Url;
@@ -33,17 +33,42 @@ impl ProtocolHandler for FileProtocolHandler {
         Ok(())
     }
 
-    fn delete_string_from_url(&self, _: &Url) -> Result<()> {
-        todo!("Delete Operation is not yet implemented for the file handler!")
+    fn delete_string_from_url(&self, url: &Url) -> Result<()> {
+        let Ok(path) = url.to_file_path() else {
+            anyhow::bail!("Could not parse URL to path");
+        };
+        remove_file(path)?;
+        Ok(())
     }
-    fn create_empty_string_on_url(&self, _: &Url) -> Result<()> {
-        todo!("Create String Operation is not yet implemented for the file handler!")
+    fn create_empty_string_on_url(&self, url: &Url) -> Result<()> {
+        self.push_string_to_url(url, "")
     }
-    fn create_url_container(&self, _: &Url) -> Result<()> {
-        todo!("Create Container Container Operation is not yet implemented for the file handler!")
+
+    fn create_url_container(&self, url: &Url) -> Result<()> {
+        let Ok(path) = url.to_file_path() else {
+            anyhow::bail!("Could not parse URL to path");
+        };
+
+        create_dir_all(path)?;
+        Ok(())
     }
-    fn list_urls_in_url_container(&self, _: &Url) -> Result<HashSet<Url>> {
-        todo!("List URL Operation is not yet implemented for the file handler!")
+
+    fn list_urls_in_url_container(&self, url: &Url) -> Result<HashSet<Url>> {
+        let Ok(path) = url.to_file_path() else {
+            anyhow::bail!("Could not parse URL to path");
+        };
+        let mut urls: HashSet<Url> = HashSet::default();
+
+        for dir_entry in path.read_dir()? {
+            let Ok(valid_entry) = dir_entry else {
+                continue;
+            };
+            let Ok(entry_url) = try_build_url_from_path_buf(&valid_entry.path()) else {
+                continue;
+            };
+            urls.insert(entry_url);
+        }
+        Ok(urls)
     }
 }
 
