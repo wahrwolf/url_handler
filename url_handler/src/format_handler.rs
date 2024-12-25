@@ -7,7 +7,7 @@ pub trait FormatHandler<T: Serialize + DeserializeOwned> {
     fn to_string(&self, record: &T) -> Result<String>;
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum KnownFormatHandler {
     Toml(TomlHandler),
     Json(JsonHandler),
@@ -31,7 +31,7 @@ impl<T: Serialize + DeserializeOwned> FormatHandler<T> for KnownFormatHandler {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct FormatHandlerRegistry {
     toml: KnownFormatHandler,
     json: KnownFormatHandler,
@@ -68,7 +68,7 @@ impl FormatHandlerRegistry {
     }
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct TomlHandler {}
 impl<T: Serialize + DeserializeOwned> FormatHandler<T> for TomlHandler {
     fn from_str(&self, string: &str) -> Result<T> {
@@ -81,7 +81,7 @@ impl<T: Serialize + DeserializeOwned> FormatHandler<T> for TomlHandler {
     }
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct JsonHandler {}
 impl<T: Serialize + DeserializeOwned> FormatHandler<T> for JsonHandler {
     fn from_str(&self, string: &str) -> Result<T> {

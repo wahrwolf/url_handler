@@ -9,7 +9,7 @@ use url::Url;
 
 use super::ProtocolHandler;
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug)]
 pub struct SCPProtocolHandler {}
 
 impl ProtocolHandler for SCPProtocolHandler {

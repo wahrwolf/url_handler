@@ -20,6 +20,7 @@ pub trait ProtocolHandler {
     fn list_urls_in_url_container(&self, url: &Url) -> Result<HashSet<Url>>;
 }
 
+#[derive(Clone, Debug)]
 pub enum KnownProtocolHandler {
     File(FileProtocolHandler),
     Scp(SCPProtocolHandler),

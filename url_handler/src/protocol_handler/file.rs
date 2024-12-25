@@ -7,7 +7,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use url::Url;
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug)]
 pub struct FileProtocolHandler {}
 
 impl ProtocolHandler for FileProtocolHandler {

@@ -49,7 +49,7 @@ struct HostConfig {
     password: Option<String>,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug)]
 pub struct HttpProtocolHandler {
     config_per_host: HashMap<String, HostConfig>,
 }
@@ -118,11 +118,18 @@ impl ProtocolHandler for HttpProtocolHandler {
         Ok(())
     }
 
-    fn delete_string_from_url(&self, _: &Url) -> Result<()> {
-        todo!("Delete Operation is not yet implemented for the http handler!")
+    fn delete_string_from_url(&self, url: &Url) -> Result<()> {
+        self.build_request_with_config(url, HttpMethod::Delete)?
+            .send()?
+            .error_for_status()?;
+        Ok(())
     }
-    fn create_empty_string_on_url(&self, _: &Url) -> Result<()> {
-        todo!("Create String Operation is not yet implemented for the http handler!")
+    fn create_empty_string_on_url(&self, url: &Url) -> Result<()> {
+        self.build_request_with_config(url, HttpMethod::Put)?
+            .body("")
+            .send()?
+            .error_for_status()?;
+        Ok(())
     }
     fn create_url_container(&self, _: &Url) -> Result<()> {
         todo!("Create Container Container Operation is not yet implemented for the http handler!")

@@ -9,6 +9,7 @@ pub struct ProtocolHandlerConfig {
     http: HttpProtocolHandlerConfig,
 }
 
+#[derive(Clone, Debug)]
 pub struct ProtocolHandlerRegistry {
     file_handler: KnownProtocolHandler,
     scp_handler: KnownProtocolHandler,
